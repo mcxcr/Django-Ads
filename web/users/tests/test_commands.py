@@ -4,19 +4,19 @@ from django.db.utils import OperationalError
 from django.test import TestCase
 
 
-class CommandTests(TestCase):
+# class CommandTests(TestCase):
 
-    def test_wait_for_db_ready(self):
-        """TEST: Waiting for DB when DB is available."""
-        with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
-            gi.return_value = True
-            call_command('wait_for_db')
-            self.assertEqual(gi.call_count, 1)
+#     def test_wait_for_db_ready(self):
+#         """TEST: Waiting for DB when DB is available."""
+#         with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
+#             gi.return_value = True
+#             call_command('wait_for_db')
+#             self.assertEqual(gi.call_count, 1)
 
-    @patch('time.sleep', return_value=True)
-    def test_wait_for_db(self, ts):
-        """TEST: Waiting for DB."""
-        with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
-            gi.side_effect = [OperationalError] * 15 + [True]
-            call_command('wait_for_db')
-            self.assertEqual(gi.call_count, 16)
+#     @patch('time.sleep', return_value=True)
+#     def test_wait_for_db(self, ts):
+#         """TEST: Waiting for DB."""
+#         with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
+#             gi.side_effect = [OperationalError] * 15 + [True]
+#             call_command('wait_for_db')
+#             self.assertEqual(gi.call_count, 16)
