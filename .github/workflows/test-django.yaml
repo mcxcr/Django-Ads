@@ -18,7 +18,7 @@ jobs:
         working-directory: ./web
 
     env:
-      SERVER_ENV_IS: 2
+      SERVER_ENV_IS: 1
       DJANGO_SECRET_KEY: test-key-not-good-make-one-way-better-soon
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
@@ -26,6 +26,21 @@ jobs:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres_password
       DB_IGNORE_SSL: "true"
+    
+    services:
+      postgres_main:
+        image: postgres:14
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     strategy:
       max-parallel: 4
