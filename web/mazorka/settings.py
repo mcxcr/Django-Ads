@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-# import os
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&ny$8n_!r9n2h90%x7oz6^70wuis6+7hxvzj34hhxy%^lkl!jn'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str(os.environ.get('DEBUG')) == "1"
 
+ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST")
 ALLOWED_HOSTS = []
-
+if ENV_ALLOWED_HOST:
+    ALLOWED_HOSTS = [ENV_ALLOWED_HOST]
 
 # Application definition
 
@@ -92,6 +94,39 @@ DATABASES = {
     }
 }
 
+# DB Access Customizations
+DB_HOST = os.environ.get('POSTGRES_HOST')
+DB_PORT = os.environ.get('POSTGRES_PORT')
+DB_DATABASE = os.environ.get('POSTGRES_DB')
+DB_USER = os.environ.get('POSTGRES_USER')
+DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+DB_IS_AVAIL = all([
+    DB_HOST,
+    DB_PORT,
+    DB_DATABASE,
+    DB_USER,
+    DB_PASSWORD
+])
+DB_IGNORE_SSL = os.environ.get("DB_IGNORE_SSL") == "true"
+
+if DB_IS_AVAIL:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+            'NAME': DB_DATABASE,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+        }
+    }
+    if not DB_IGNORE_SSL:
+        DATABASES["default"]["OPTIONS"] = {
+            "sslmode": "require"
+        }
+
+# print(DATABASES)  # PRINT DB DETAILS AS A REF
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -141,8 +176,9 @@ AUTH_USER_MODEL = 'users.User'
 #####################################
 # LOGIN_URL = 'two_factor:login'
 
-SERVER_ENV_IS = 2
-# Admin colored tag - Dev=2, Stage=1, Production=0.
+# Admin colored tags based on Env: Dev=2, Stage=1, Production=0.
+SERVER_ENV_IS = int(os.environ.get('SERVER_ENV_IS'))
+
 if SERVER_ENV_IS == 2:
     ENVIRONMENT_NAME = 'Development'
     ENVIRONMENT_COLOR = 'orange'

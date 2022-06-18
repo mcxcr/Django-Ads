@@ -102,7 +102,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+# .env
 .venv
 env/
 venv/
@@ -130,7 +130,6 @@ dmypy.json
 
 # Exclude from upload
 .DS_Store
-web/.env
-web/.env.prod
-web/deployment-guide.md
-.kube/
+.env
+.env.prod
+deployment-guide.md

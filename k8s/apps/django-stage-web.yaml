@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-stage-web-deployment
+  labels:
+    app: django-stage-web-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django-stage-web-deployment
+  template:
+    metadata:
+      labels:
+        app: django-stage-web-deployment
+    spec:
+      containers:
+      - name: django-stage-web
+        image: registry.digitalocean.com/cr4e-stage/django-stage-web:latest
+        imagePullPolicy: Always
+        envFrom:
+          - secretRef:
+              name: django-stage-web-prod-env
+        env:
+          - name: PORT
+            value: "8002"
+        ports:
+        - containerPort: 8002
+      imagePullSecrets:
+        - name: cr4e-stage
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-stage-web-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8002
+  selector:
+    app: django-stage-web-deployment

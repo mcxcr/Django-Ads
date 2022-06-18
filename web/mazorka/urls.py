@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import path, include
 
@@ -23,8 +24,11 @@ from django.urls import path, include
 # admin.site.__class__ = AdminSiteOTPRequired
 
 # Next 2 lines enable Admin OTP Feature - Original
-from django_otp.admin import OTPAdminSite
-admin.site.__class__ = OTPAdminSite
+SERVER_ENV_IS = int(os.environ.get('SERVER_ENV_IS')) == 2
+
+if not SERVER_ENV_IS:
+    from django_otp.admin import OTPAdminSite
+    admin.site.__class__ = OTPAdminSite
 
 urlpatterns = [
     path('admin/', admin.site.urls),
