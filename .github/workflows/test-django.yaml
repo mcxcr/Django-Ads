@@ -16,7 +16,17 @@ jobs:
     defaults:
       run:
         working-directory: ./web
-        
+
+    env:
+      SERVER_ENV_IS: 2
+      DJANGO_SECRET_KEY: test-key-not-good-make-one-way-better-soon
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: dockerdc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      DB_IGNORE_SSL: "true"
+
     strategy:
       max-parallel: 4
       matrix:
