@@ -13,7 +13,7 @@ jobs:
     uses: mcxcr/Django-Ads/.github/workflows/test-django.yaml@main
   docker_build:
     runs-on: ubuntu-latest
-    # needs: [test_django_job]
+    needs: [test_django_job]
     env:
       # CLUSTER_NAME: cr4e-stage
       DJANGO_SECRET_KEY: test-key-not-good-make-one-way-better-soon
