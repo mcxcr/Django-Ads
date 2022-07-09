@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test_django_job]
     env:
-      # CLUSTER_NAME: cr4e-stage
-      DJANGO_SECRET_KEY: test-key-not-good-make-one-way-better-soon
+      CLUSTER_NAME: cr4e-stage
+      # DJANGO_SECRET_KEY: test-key-not-good-make-one-way-better-soon
 
     steps:
     - name: Checkout Code
@@ -37,9 +37,9 @@ jobs:
     - name: Push image
       run: |
         docker push registry.digitalocean.com/cr4e-stage/django-stage-web --all-tags
-    # - name: K8s cluster kubeconfig file with short-lived creds
-    #   run: |
-    #     doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME }}
+    - name: K8s cluster kubeconfig file with short-lived creds
+      run: |
+        doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME }}
     # - name: Update Deployment Secrets
     #   run: |
     #     cat << EOF >> web/.env.prod
@@ -58,13 +58,13 @@ jobs:
     #     EOF
     #     kubectl delete secret django-stage-web-prod-env
     #     kubectl create secret generic django-stage-web-prod-env --from-env-file=web/.env.prod
-    # - name: Update Deployment Image
-    #   run: |
-    #     kubectl set image deployment/django-stage-web-deployment django-stage-web=registry.digitalocean.com/cr4e-stage/django-stage-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
-    # - name: Wait for rollout to finish
-    #   run: |
-    #     kubectl rollout status deployment/django-stage-web-deployment
-    # - name: Post-Build Django Commands - Migrate / Collectstatic
-    #   run: |
-    #     export SINGLE_POD_NAME=$(kubectl get pod -l app=django-stage-web-deployment -o jsonpath="{.items[0].metadata.name}")
-    #     kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
+    - name: Update Deployment Image
+      run: |
+        kubectl set image deployment/django-stage-web-deployment django-stage-web=registry.digitalocean.com/cr4e-stage/django-stage-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
+    - name: Wait for rollout to finish
+      run: |
+        kubectl rollout status deployment/django-stage-web-deployment
+    - name: Post-Build Django Commands - Migrate / Collectstatic
+      run: |
+        export SINGLE_POD_NAME=$(kubectl get pod -l app=django-stage-web-deployment -o jsonpath="{.items[0].metadata.name}")
+        kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
