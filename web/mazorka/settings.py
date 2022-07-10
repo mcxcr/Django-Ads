@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'storages',
     'users',
+    'posts',
     'django_otp',
     # 'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
