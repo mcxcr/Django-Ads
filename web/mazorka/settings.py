@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 if ENV_ALLOWED_HOST:
     ALLOWED_HOSTS = [ENV_ALLOWED_HOST]
 
+CSRF_TRUSTED_ORIGINS = ['https://stage.cr4ever.com', 'https://cr4ever.com']
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -171,7 +173,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles-cdn"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "staticfiles"
+]
+from .cdn.conf import * # noqa
 
 #####################################
 # More customizations
