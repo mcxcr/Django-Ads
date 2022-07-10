@@ -40,24 +40,23 @@ jobs:
     - name: K8s cluster kubeconfig file with short-lived creds
       run: |
         doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME }}
-    # - name: Update Deployment Secrets
-    #   run: |
-    #     cat << EOF >> web/.env.prod
-    #     AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
-    #     DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-    #     DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}
-    #     DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-    #     ENV_ALLOWED_HOST=${{ secrets.ENV_ALLOWED_HOST }}
-    #     POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
-    #     POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
-    #     POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-    #     POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-    #     POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-    #     EOF
-    #     kubectl delete secret django-stage-web-prod-env
-    #     kubectl create secret generic django-stage-web-prod-env --from-env-file=web/.env.prod
+    - name: Update Deployment Secrets
+      run: |
+        cat << EOF >> web/.env.prod
+        SERVER_ENV_IS=${{ secrets.SERVER_ENV_IS }}
+        DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+        DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+        DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}
+        DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+        ENV_ALLOWED_HOST=${{ secrets.ENV_ALLOWED_HOST }}
+        POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+        POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}
+        POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+        POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+        EOF
+        kubectl delete secret django-stage-web-prod-env
+        kubectl create secret generic django-stage-web-prod-env --from-env-file=web/.env.prod
     - name: Update Deployment Image
       run: |
         kubectl set image deployment/django-stage-web-deployment django-stage-web=registry.digitalocean.com/cr4e-stage/django-stage-web:${GITHUB_SHA::7}-${GITHUB_RUN_ID::5}
