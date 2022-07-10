@@ -30,7 +30,8 @@ ALLOWED_HOSTS = []
 if ENV_ALLOWED_HOST:
     ALLOWED_HOSTS = [ENV_ALLOWED_HOST]
 
-CSRF_TRUSTED_ORIGINS = ['https://stage.cr4ever.com', 'https://cr4ever.com']
+# CSRF_TRUSTED_ORIGINS = ['https://stage.cr4ever.com', 'https://cr4ever.com']
+CSRF_TRUSTED_ORIGINS = ['stage.cr4ever.com', 'cr4ever.com']
 
 # Application definition
 
