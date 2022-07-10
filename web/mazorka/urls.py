@@ -24,7 +24,7 @@ from django.urls import path, include
 # admin.site.__class__ = AdminSiteOTPRequired
 
 # Next 2 lines enable Admin OTP Feature - Original
-SERVER_ENV_IS = int(os.environ.get('SERVER_ENV_IS')) == 1
+SERVER_ENV_IS = int(os.environ.get('SERVER_ENV_IS')) == 2
 
 if not SERVER_ENV_IS:
     from django_otp.admin import OTPAdminSite
